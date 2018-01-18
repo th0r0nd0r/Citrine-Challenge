@@ -1,8 +1,8 @@
 class UnitsController < ApplicationController
   def show
     units = params[:units]
-    Unit.convert(units)
-
+    @units = Unit.convert(units)
+    render :show
   end
 
   def unit_params

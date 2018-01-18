@@ -41,7 +41,7 @@ class Unit < ApplicationRecord
     first_char = units[0]
 
     # zipping units and values up with operators, and converting to final data types
-    # string and float
+    # (string and float)
     if operators.include?(first_char)
       unit_name = operators.zip(si_units).flatten.join
       m_f = eval(operators.zip(converted_values).flatten.join)
@@ -54,7 +54,7 @@ class Unit < ApplicationRecord
     multiplication_factor = Integer(m_f * (10**14)) / Float(10**14)
 
 
-    [unit_name, multiplication_factor]
+    {"unit_name": unit_name, "multiplication_factor": multiplication_factor}
   end
 
 end
