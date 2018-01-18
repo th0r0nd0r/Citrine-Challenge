@@ -12,6 +12,11 @@ class Unit < ApplicationRecord
     # zip both new arrays with the array of operators, and flatten
     # join both, call eval method on value string to get the multiplication factor
 
+    freedom_units = units.split(/[()*\/]/)
+    operators = units.split(/[^()*\/]/)
+
+    
+
     unit_conversions = {
       "min": "s",
       "h": "s",
