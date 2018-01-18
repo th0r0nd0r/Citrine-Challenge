@@ -46,11 +46,13 @@ class Unit < ApplicationRecord
 
     if operators.include?(first_char)
       unit_name = operators.zip(si_units).flatten.join
-      multiplication_factor = eval(operators.zip(converted_values).flatten.join)
+      m_f = eval(operators.zip(converted_values).flatten.join)
     else
       unit_name = si_units.zip(operators).flatten.join
-      multiplication_factor = eval(converted_values.zip(operators).flatten.join)
+      m_f = eval(converted_values.zip(operators).flatten.join)
     end)
+
+    multiplication_factor = Integer(m_f * (10**14)) / Float(10**14)
 
 
     [unit_name, multiplication_factor]
