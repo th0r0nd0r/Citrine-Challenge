@@ -12,8 +12,28 @@ class Unit < ApplicationRecord
     # zip both new arrays with the array of operators, and flatten
     # join both, call eval method on value string to get the multiplication factor
 
-    unit_hash = {
+    unit_conversions = {
+      "min": "s",
+      "h": "s",
+      "d": "s",
+      "°": "rad",
+      "‘": "rad",
+      "“": "rad",
+      "ha": "m2",
+      "L": "m3",
+      "t": "kg"
+    }
 
+    value_conversions = {
+      "min": "60",
+      "h": "3600",
+      "d": "86400",
+      "°": (Math::PI / 180).to_s,
+      "‘": (Math::PI / 10800).to_s,
+      "“": (Math::PI / 648000).to_s,
+      "ha": "10000",
+      "L": "0.001",
+      "t": "1000"
     }
 
   end
