@@ -1,0 +1,3 @@
+class ConversionsController < ApplicationController
+  
+end
