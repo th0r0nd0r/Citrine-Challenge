@@ -15,6 +15,9 @@ class Unit < ApplicationRecord
     freedom_units = units.split(/[()*\/]/)
     operators = units.split(/[^()*\/]/)
 
+    si_units = freedom_units.map { |unit| unit_conversions[unit] }
+    converted_values = freedom_units.map { |unit| value_conversions[unit] }
+
     
 
     unit_conversions = {
