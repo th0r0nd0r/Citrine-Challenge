@@ -1,3 +1,0 @@
-class ConversionsController < ApplicationController
-  
-end
