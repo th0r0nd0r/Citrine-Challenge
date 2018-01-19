@@ -39,6 +39,17 @@ class Unit < ApplicationRecord
     "t": "1000.0"
   }
 
+
+  # this method creates a hash that maps every unit and operator from
+  # the query string to its proper order
+  # ex: 
+  # query = "degree/minute"
+  # units = ["degree", "minute"]
+  # operators = ["/"]
+  # 
+  # self.location_map(units, operators, query) ==>
+  # {0 => "degree", 1 => "/", 2 => "minute"}
+
   def self.location_map(units, operators, query)
     map_idx = 0
     locations = {}
@@ -63,11 +74,26 @@ class Unit < ApplicationRecord
     locations
   end
 
-  def self.convert(units)
-    # sample values for 'units' argument
-    # "degree/minute"
-    # "(degree(minute/hectare))"
 
+  # takes the result of a self.location_map
+  # and uses either the conversion constantsto replace freedom units 
+  # with either si units or conversion factors.
+  # it returns a string, like "m3/s", or "0.001/60.0"
+  # it takes advantage of the fact that the ordering of Ruby hash literals is preserved
+  def self.location_to_string(locations, conversion_hash)
+    new_units = locations.values.map do |item|
+      key = item.to_sym
+      if conversion_hash.keys.include?(key)
+        conversion_hash[key]
+      else
+        item
+      end
+    end
+
+    new_units.join
+  end
+
+  def self.convert(units)
     # splitting the input into an array of units and an array of operators
     freedom_units = units.split(/[()*\/]/)
     freedom_units.reject! { |el| el.length == 0}
@@ -77,31 +103,14 @@ class Unit < ApplicationRecord
     # validation check to sanitize input so we can't eval anything but 
     # units and operators
     freedom_units.each do |unit|
-      return "Invalid query" unless UNIT_CONVERSIONS.keys.include?(unit.to_sym)
+      return "Invalid Unit" unless UNIT_CONVERSIONS.keys.include?(unit.to_sym)
     end
 
-
-    # creating arrays for si units and values
-    si_units = freedom_units.map { |unit| UNIT_CONVERSIONS[unit.to_sym] }
-    converted_values = freedom_units.map { |unit| VALUE_CONVERSIONS[unit.to_sym] }
-
+    # mapping units and operators in order of appearance
     locations = self.location_map(freedom_units, operators, units)
-    byebug
     
-
-    # figuring out whether to start zipping with units or operators
-    first_char = units[0]
-
-
-    # zipping units and values up with operators, and converting to final data types
-    # (string and float)
-    if operators.include?(first_char)
-      unit_name = operators.zip(si_units).flatten.join
-      m_f = eval(operators.zip(converted_values).flatten.join)
-    else
-      unit_name = si_units.zip(operators).flatten.join
-      m_f = eval(converted_values.zip(operators).flatten.join)
-    end
+    unit_name = self.location_to_string(locations, UNIT_CONVERSIONS)
+    m_f = eval(self.location_to_string(locations, VALUE_CONVERSIONS))
 
 
     # rounding the multiplication factor to 14 decimal places
