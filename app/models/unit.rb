@@ -51,9 +51,15 @@ class Unit < ApplicationRecord
     freedom_units = units.split(/[()*\/]/)
     operators = units.gsub(/[^()*\/]/, '').split('')
 
+    # validation check to sanitize input so we can't eval anything but 
+    # units and operators
+    freedom_units.each do |unit|
+      return "Invalid query" unless UNIT_CONVERSIONS.values.includes?(unit)
+    end
+
     # creating arrays for si units and values
-    si_units = freedom_units.map { |unit| UNIT_CONVERSIONS[unit] }
-    converted_values = freedom_units.map { |unit| VALUE_CONVERSIONS[unit] }
+    si_units = freedom_units.map { |unit| UNIT_CONVERSIONS[unit.to_sym] }
+    converted_values = freedom_units.map { |unit| VALUE_CONVERSIONS[unit.to_sym] }
 
     # figuring out whether to start zipping with units or operators
     first_char = units[0]
