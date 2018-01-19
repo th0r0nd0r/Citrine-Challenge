@@ -76,7 +76,7 @@ class Unit < ApplicationRecord
 
 
   # takes the result of a self.location_map
-  # and uses either the conversion constantsto replace freedom units 
+  # and uses one of the conversion constants to replace freedom units 
   # with either si units or conversion factors.
   # it returns a string, like "m3/s", or "0.001/60.0"
   # it takes advantage of the fact that the ordering of Ruby hash literals is preserved
@@ -99,18 +99,20 @@ class Unit < ApplicationRecord
     freedom_units.reject! { |el| el.length == 0}
     operators = units.gsub(/[^()*\/]/, '').split('')
 
-    # byebug
+
     # validation check to sanitize input so we can't eval anything but 
     # units and operators
     freedom_units.each do |unit|
       return "Invalid Unit" unless UNIT_CONVERSIONS.keys.include?(unit.to_sym)
     end
 
+
     # mapping units and operators in order of appearance
     locations = self.location_map(freedom_units, operators, units)
     
     unit_name = self.location_to_string(locations, UNIT_CONVERSIONS)
     m_f = eval(self.location_to_string(locations, VALUE_CONVERSIONS))
+
 
     # rounding the multiplication factor to 14 decimal places
     multiplication_factor = Integer(m_f * (10**14)) / Float(10**14)

@@ -1,7 +1,7 @@
 class UnitsController < ApplicationController
   def si
     units = params[:units]
-    @units = Unit.convert(units[units])
+    @units = Unit.convert(units)
     if @units
       render json: @units
     else
