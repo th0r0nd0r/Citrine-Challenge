@@ -39,14 +39,36 @@ class Unit < ApplicationRecord
     "t": "1000.0"
   }
 
+  def self.location_map(units, operators, query)
+    map_idx = 0
+    locations = {}
+
+    while query.length > 0
+      first_char = query[0]
+      if first_char == operators[0]
+        current_item = operators[0]
+      else
+        current_item = units[0]
+      end
+      
+      locations[current_item] = map_idx
+
+      slice_length = current_item.length
+      query = query[slice_length..-1]
+      map_idx += 1
+    end
+
+    locations
+  end
+
   def self.convert(units)
     # sample values for 'units' argument
     # "degree/minute"
     # "(degree(minute/hectare))"
 
-
     # splitting the input into an array of units and an array of operators
     freedom_units = units.split(/[()*\/]/)
+    freedom_units.reject! { |el| el.length == 0}
     operators = units.gsub(/[^()*\/]/, '').split('')
 
 
@@ -61,6 +83,9 @@ class Unit < ApplicationRecord
     si_units = freedom_units.map { |unit| UNIT_CONVERSIONS[unit.to_sym] }
     converted_values = freedom_units.map { |unit| VALUE_CONVERSIONS[unit.to_sym] }
 
+    byebug
+    locations = self.location_map(si_units, operators, units)
+    
 
     # figuring out whether to start zipping with units or operators
     first_char = units[0]
@@ -76,7 +101,7 @@ class Unit < ApplicationRecord
       m_f = eval(converted_values.zip(operators).flatten.join)
     end
 
-    
+
     # rounding the multiplication factor to 14 decimal places
     multiplication_factor = Integer(m_f * (10**14)) / Float(10**14)
 

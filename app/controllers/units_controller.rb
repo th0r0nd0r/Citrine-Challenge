@@ -2,7 +2,11 @@ class UnitsController < ApplicationController
   def si
     units = params[:units]
     @units = Unit.convert(units[units])
-    render json: @units
+    if @units
+      render json: @units
+    else
+      render json: ["Invalid Query"], status: 422
+    end
   end
 
   def unit_params
