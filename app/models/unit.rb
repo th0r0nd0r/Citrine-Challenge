@@ -99,7 +99,7 @@ class Unit < ApplicationRecord
     freedom_units.reject! { |el| el.length == 0}
     operators = units.gsub(/[^()*\/]/, '').split('')
 
-
+    # byebug
     # validation check to sanitize input so we can't eval anything but 
     # units and operators
     freedom_units.each do |unit|
@@ -112,10 +112,12 @@ class Unit < ApplicationRecord
     unit_name = self.location_to_string(locations, UNIT_CONVERSIONS)
     m_f = eval(self.location_to_string(locations, VALUE_CONVERSIONS))
 
-
     # rounding the multiplication factor to 14 decimal places
     multiplication_factor = Integer(m_f * (10**14)) / Float(10**14)
 
+
+    # TODO: email Jordan at reasonable time tomorrow morning to ask about
+    # Ruby's auto-conversion to scientific notation
 
     {"unit_name": unit_name, "multiplication_factor": multiplication_factor}
   end
