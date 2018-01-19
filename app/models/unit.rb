@@ -47,11 +47,13 @@ class Unit < ApplicationRecord
       first_char = query[0]
       if first_char == operators[0]
         current_item = operators[0]
+        operators.shift
       else
         current_item = units[0]
+        units.shift
       end
       
-      locations[current_item] = map_idx
+      locations[map_idx] = current_item
 
       slice_length = current_item.length
       query = query[slice_length..-1]
@@ -83,8 +85,8 @@ class Unit < ApplicationRecord
     si_units = freedom_units.map { |unit| UNIT_CONVERSIONS[unit.to_sym] }
     converted_values = freedom_units.map { |unit| VALUE_CONVERSIONS[unit.to_sym] }
 
+    locations = self.location_map(freedom_units, operators, units)
     byebug
-    locations = self.location_map(si_units, operators, units)
     
 
     # figuring out whether to start zipping with units or operators
