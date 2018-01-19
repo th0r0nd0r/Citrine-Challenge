@@ -1,5 +1,5 @@
 class UnitsController < ApplicationController
-  def show
+  def si
     units = params[:units]
     @units = Unit.convert(units[units])
     render json: @units
