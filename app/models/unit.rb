@@ -117,10 +117,6 @@ class Unit < ApplicationRecord
     # rounding the multiplication factor to 14 decimal places
     multiplication_factor = Integer(m_f * (10**14)) / Float(10**14)
 
-
-    # TODO: email Jordan at reasonable time tomorrow morning to ask about
-    # Ruby's auto-conversion to scientific notation
-
     {"unit_name": unit_name, "multiplication_factor": multiplication_factor}
   end
 
