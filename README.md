@@ -1,24 +1,13 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Welcome to the home of the SI Unit converter!
 
-Things you may want to cover:
+The converter takes parameters from a query string, like so:
 
-* Ruby version
+https://citrine-si-converter.herokuapp.com//units/si?units=degree/minute
 
-* System dependencies
+It then serves up a JSON object containing two properties:
 
-* Configuration
+unit_name: a string with each incoming unit converted to its SI counterpart
 
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+multiplication_factor: a floating point number that converts your units to SI
